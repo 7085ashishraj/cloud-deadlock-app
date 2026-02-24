@@ -101,10 +101,6 @@ The project includes a ready-to-use deployment script optimized for Ubuntu EC2 i
     ```
     *Note: Ensure your EC2 security groups are configured to allow inbound HTTP (Port 80) and HTTPS (Port 443) traffic.*
 
-## 📸 Screenshots
-
-*(You can add screenshots of your application here to make the Readme more appealing.)*
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
