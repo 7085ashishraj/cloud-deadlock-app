@@ -5,6 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from fastapi.staticfiles import StaticFiles
 import os
+from dotenv import load_dotenv
+
+# MUST be called before any module imports so they can pick up the environment variables
+load_dotenv()
 
 from services.deadlock_service import DeadlockDetector
 from services.s3_service import generate_and_upload_graph

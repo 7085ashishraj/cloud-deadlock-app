@@ -4,24 +4,12 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import io
 import uuid
+from dotenv import load_dotenv
 
-# Configuration (In production, load these from .env)
-AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")
-AWS_SECRET_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-AWS_BUCKET_NAME = os.getenv("AWS_BUCKET_NAME", "cloud-deadlock-visuals")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env_path = os.path.join(BASE_DIR, ".env")
+load_dotenv(env_path, override=True)
 
-# Initialize S3 Client gracefully
-try:
-    if AWS_ACCESS_KEY and AWS_SECRET_KEY:
-        s3_client = boto3.client(
-            's3',
-            aws_access_key_id=AWS_ACCESS_KEY,
-            aws_secret_access_key=AWS_SECRET_KEY,
-        )
-    else:
-        s3_client = boto3.client('s3') # Triggers default AWS profile if configured
-except Exception:
-    s3_client = None
 
 def generate_and_upload_graph(graph: nx.DiGraph) -> str:
     """
@@ -54,18 +42,26 @@ def generate_and_upload_graph(graph: nx.DiGraph) -> str:
     filename = f"graph_{uuid.uuid4().hex[:8]}.png"
     
     # 3. Upload to S3 (if properly configured)
-    try:
-        if s3_client and AWS_ACCESS_KEY: # Only try to upload if we explicitely passed or know we have credentials
-            s3_client.upload_fileobj(
-                buf, 
-                AWS_BUCKET_NAME, 
-                filename,
-                ExtraArgs={'ContentType': 'image/png', 'ACL': 'public-read'}
-            )
-            # Return S3 URL
-            return f"https://{AWS_BUCKET_NAME}.s3.amazonaws.com/{filename}"
-    except Exception as e:
-        print(f"S3 Upload failed: {e}. Falling back to local storage.")
+    AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_BUCKET_NAME = os.getenv("AWS_BUCKET_NAME", "cloud-deadlock-visuals")
+    
+    if AWS_ACCESS_KEY and AWS_SECRET_KEY: # Only try to upload if we explicitely passed or know we have credentials
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=AWS_ACCESS_KEY,
+            aws_secret_access_key=AWS_SECRET_KEY,
+        )
+        s3_client.upload_fileobj(
+            buf, 
+            AWS_BUCKET_NAME, 
+            filename,
+            ExtraArgs={'ContentType': 'image/png', 'ACL': 'public-read'}
+        )
+        # Return S3 URL
+        return f"https://{AWS_BUCKET_NAME}.s3.amazonaws.com/{filename}"
+    else:
+        raise Exception("AWS Credentials missing from environment!")
         
     # 4. Fallback: Save Locally for Development
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
