@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 body {
   margin: 0;
@@ -9,6 +7,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #0f172a; /* slate-900 */
-  color: #f8fafc; /* slate-50 */
+  background-color: #0f172a;
+  /* slate-900 */
+  color: #f8fafc;
+  /* slate-50 */
 }

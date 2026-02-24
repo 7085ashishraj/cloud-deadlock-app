@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = `http://${window.location.hostname}:8000/api`;
 
 function App() {
   const [processId, setProcessId] = useState('');
@@ -197,7 +197,7 @@ function App() {
         {graphUrl && (
           <div className="w-full mt-8 flex flex-col items-center animate-fade-in text-center p-6 border border-cyan-500/30 bg-cyan-900/10 rounded-2xl">
             <h3 className="text-2xl font-bold text-cyan-400 mb-6 flex items-center gap-2"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Resource Allocation Graph</h3>
-            <img src={`${graphUrl}?t=${new Date().getTime()}`} alt="Deadlock Graph" className="rounded-xl border border-slate-700 shadow-2xl shadow-cyan-500/10 max-w-full h-auto bg-white/90 p-2" />
+            <img src={`${API_BASE.replace('/api', '')}${graphUrl}?t=${new Date().getTime()}`} alt="Deadlock Graph" className="rounded-xl border border-slate-700 shadow-2xl shadow-cyan-500/10 max-w-full h-auto bg-white/90 p-2" />
             <p className="text-slate-500 mt-4 text-xs font-mono break-all bg-black/50 p-2 rounded">🔗 URL: {graphUrl}</p>
           </div>
         )}

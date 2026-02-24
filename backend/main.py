@@ -19,14 +19,16 @@ app = FastAPI(title="Cloud Deadlock App API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # In production, restrict this to your actual frontend domain
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Mount static folder for fallback image hosting
-os.makedirs("static", exist_ok=True)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+os.makedirs(STATIC_DIR, exist_ok=True)
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Initialize Deadlock Detector
 detector = DeadlockDetector()

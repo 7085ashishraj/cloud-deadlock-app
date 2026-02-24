@@ -68,10 +68,12 @@ def generate_and_upload_graph(graph: nx.DiGraph) -> str:
         print(f"S3 Upload failed: {e}. Falling back to local storage.")
         
     # 4. Fallback: Save Locally for Development
-    os.makedirs("static", exist_ok=True)
-    local_path = os.path.join("static", "latest_graph.png")
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    STATIC_DIR = os.path.join(BASE_DIR, "static")
+    os.makedirs(STATIC_DIR, exist_ok=True)
+    local_path = os.path.join(STATIC_DIR, "latest_graph.png")
     with open(local_path, "wb") as f:
         f.write(buf.getvalue())
         
     # Return local API URL for the image
-    return "http://localhost:8000/static/latest_graph.png"
+    return "/static/latest_graph.png"
